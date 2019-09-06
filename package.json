@@ -1,6 +1,6 @@
 {
   "name": "macoolka-object",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "files": [
@@ -16,7 +16,7 @@
     "build": "rm -rf lib/ && tsc ",
     "precommit": "npm run lint",
     "prepush": "npm run test",
-    "all":"npm run clean && tsc && jest  --coverage && tslint -p tsconfig.json",
+    "all": "npm run clean && tsc && jest  --coverage && tslint -p tsconfig.json",
     "coverage": "rimraf coverage && jest  --coverage"
   },
   "dependencies": {
