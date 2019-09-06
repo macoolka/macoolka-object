@@ -16,12 +16,16 @@ import {
     get, has, mapKeys, mapValues, pick, pickBy, merge,
     toPairs, omit, omitBy, mergeWith, set, setWith, clone, cloneDeep, toString
 } from 'lodash'
+import { fromFoldableMap } from 'fp-ts/lib/Record'
+import { getLastSemigroup } from 'fp-ts/lib/Semigroup'
+import { zip, array } from 'fp-ts/lib/Array'
 export {
     get, has, mapKeys, mapValues,
     pick, pickBy, merge, toPairs, omit, omitBy,
     mergeWith, set, setWith, clone, cloneDeep,
     toString
 }
+import { identity } from 'fp-ts/lib/function'
 import { Diff } from 'macoolka-typescript'
 
 /**
@@ -56,7 +60,8 @@ import { Diff } from 'macoolka-typescript'
  */
 export const withDefaults = <D extends { [k: string]: any }, A extends D>(defaults: D) => (
     props: Diff<A, keyof D> = {} as Diff<A, keyof D>): A => merge({}, defaults, props) as A
-
+export const zipObject = <K extends string, A>(keys: Array<K>, values: Array<A>): Record<K, A> =>
+    fromFoldableMap(getLastSemigroup<A>(), array)(zip(keys, values), identity)
 /**
  * `Show` a unknown object
  * @desczh
