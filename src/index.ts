@@ -28,6 +28,8 @@ export {
 import { identity } from 'fp-ts/lib/function'
 import { Diff } from 'macoolka-typescript'
 
+import { Semigroup } from 'fp-ts/lib/Semigroup'
+import { Monoid, fold } from 'fp-ts/lib/Monoid'
 /**
  * Give a object with default value
  * @desczh
@@ -60,6 +62,10 @@ import { Diff } from 'macoolka-typescript'
  */
 export const withDefaults = <D extends { [k: string]: any }, A extends D>(defaults: D) => (
     props: Diff<A, keyof D> = {} as Diff<A, keyof D>): A => merge({}, defaults, props) as A
+/**
+ * 
+ * @since 0.2.2 
+ */
 export const zipObject = <K extends string, A>(keys: Array<K>, values: Array<A>): Record<K, A> =>
     fromFoldableMap(getLastSemigroup<A>(), array)(zip(keys, values), identity)
 /**
@@ -101,3 +107,23 @@ export const showUnknow: Show<unknown> = {
                                         .join(', ')} }`
                                         : 'unknown'
 }
+
+/**
+ * @since 0.2.3
+ */
+export const objectSemigroup = <T>(): Semigroup<T> => ({
+    concat: (a, b) => merge({}, cloneDeep(a), cloneDeep(b))
+})
+
+/**
+ * @since 0.2.3
+ */
+export const getMonoid = <T>(semigroup: Semigroup<T> = objectSemigroup<T>()): Monoid<T> => ({
+    empty: {} as T,
+    concat: semigroup.concat
+});
+
+/**
+ * @since 0.2.3
+ */
+export const getFold = <T=any>(semigroup: Semigroup<T> = objectSemigroup<T>()) => fold(getMonoid<T>(semigroup))
